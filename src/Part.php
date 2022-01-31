@@ -9,17 +9,17 @@ use ReflectionException;
 
 class Part implements PartInterface
 {
-    protected string $index;
-    protected string $name;
-    protected string $filename;
-    protected int $quantity;
-    protected string $material;
-    protected float $thickness;
-    protected string $comment;
-    protected string $createdAt;
-    protected string $createdBy;
-    protected string $updatedAt;
-    protected string $updatedBy;
+    protected string $index = '';
+    protected string $name = '';
+    protected string $filename = '';
+    protected int $quantity = 0;
+    protected string $material = '';
+    protected float $thickness = 0.0;
+    protected string $comment = '';
+    protected string $createdAt = '';
+    protected string $createdBy = '';
+    protected string $updatedAt = '';
+    protected string $updatedBy = '';
 
 
     /**

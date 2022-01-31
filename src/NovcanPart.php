@@ -4,8 +4,8 @@ namespace Dodocanfly\SolidEdgeBom;
 
 class NovcanPart extends Part
 {
-    protected bool $selfPart;
-    protected array $originals;
+    protected bool $selfPart = false;
+    protected array $originals = [];
 
 
     public function __construct(array $headers, array $values, array $headersMap = [])
