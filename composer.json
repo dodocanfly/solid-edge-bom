@@ -1,0 +1,24 @@
+{
+    "name": "dodocanfly/solid-edge-bom",
+    "description": "get bill of material from solid edge assembly's report export (rtf)",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Dodocanfly\\SolidEdgeBom\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "dodocanfly",
+            "email": "info@dodocanfly.pl"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "ext-iconv": "*",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^5.0"
+    }
+}
