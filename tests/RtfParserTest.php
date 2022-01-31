@@ -9,14 +9,24 @@ use PHPUnit\Framework\TestCase;
 
 class RtfParserTest extends TestCase
 {
+    private RtfParser $rtfParser;
+
+    protected function setUp(): void
+    {
+        $this->rtfParser = new RtfParser(
+            Str::cp1250ToUtf8(
+                file_get_contents(__DIR__ . '/../rtf/sample-se-report-export-cp1250.rtf')
+            )
+        );
+    }
+
+
     public function testGetHeadersFromSampleFile()
     {
-        $rtfContent = file_get_contents(__DIR__ . '/../rtf/sample-se-report-export-cp1250.rtf');
         $expectedHeaders = ["Nr elementu", "Numer dokumentu", "Rewizja", "Tytuł", "Ilość", "Nazwa pliku", "Materiał",
             "Grubość materiału", "Komentarze", "Utworzony", "Autor", "Zmodyfikowany", "Ostatni autor"
         ];
-        $rtfParser = new RtfParser( Str::cp1250ToUtf8($rtfContent) );
-        $headers = $rtfParser->getHeaders();
+        $headers = $this->rtfParser->getHeaders();
         self::assertIsArray($headers);
         self::assertCount(13, $headers);
         self::assertEquals($expectedHeaders, $headers);
@@ -33,9 +43,7 @@ class RtfParserTest extends TestCase
 
     public function testGetItemsFromSampleFile()
     {
-        $rtfContent = file_get_contents(__DIR__ . '/../rtf/sample-se-report-export-cp1250.rtf');
-        $rtfParser = new RtfParser( Str::cp1250ToUtf8($rtfContent) );
-        $items = $rtfParser->getItems();
+        $items = $this->rtfParser->getItems();
         self::assertIsArray($items);
         self::assertCount(43, $items);
         self::assertCount(13, $items[0]);
