@@ -1,6 +1,7 @@
 <?php
 
 
+use Dodocanfly\SolidEdgeBom\Exceptions\MappedHeaderNotFoundException;
 use Dodocanfly\SolidEdgeBom\NovcanPart;
 use Dodocanfly\SolidEdgeBom\RtfParser;
 use Dodocanfly\SolidEdgeBom\Str;
@@ -46,37 +47,6 @@ class NovcanPartTest extends TestCase
         self::assertEquals(0.0, $this->part0->getThickness());
         self::assertEquals(0.8, $this->part26->getThickness());
     }
-
-    #0
-    #selfPart: false
-    #index: "30x30x2"
-    #name: "Profil kwadratowy"
-    #filename: "SquareTubing 30x30x2.par"
-    #quantity: 1
-    #material: "Stal konstrukcyjna"
-    #thickness: 0.0
-    #comment: ""
-    #createdAt: "10.10.2019 07:41:30"
-    #createdBy: "MarcinRedys"
-    #updatedAt: "10.10.2019 08:02:45"
-    #updatedBy: "MarcinRedys"
-
-    #26
-    #selfPart: true
-    #originals: array:1 [
-        #"material" => "#0,8 DC01, V8, R0,65"
-    #]
-    #index: "MSG_13-04"
-    #name: "Uchwyt drążka 2L"
-    #filename: "08_MSG_Uchwyt_drążka-2L.psm"
-    #quantity: 2
-    #material: "DC01"
-    #thickness: 0.8
-    #comment: ""
-    #createdAt: "24.04.2017 08:59:49"
-    #createdBy: "MarcinRedys"
-    #updatedAt: "29.10.2021 11:26:37"
-    #updatedBy: "DarekBlank"
 
     public function testIsSelfPart()
     {
@@ -133,5 +103,48 @@ class NovcanPartTest extends TestCase
             ['material' => '#0,8 DC01, V8, R0,65'],
             $this->part26->getOriginals()
         );
+    }
+
+    public function testPartWithCustomHeadersMap()
+    {
+        $customHeadersMap = [
+            'index' => 'Autor',
+            'name' => 'Nazwa pliku',
+            'filename' => 'Ostatni autor',
+            'comment' => 'Tytuł',
+            'material' => 'Utworzony',
+            'createdAt' => 'Numer dokumentu',
+        ];
+        $part33 = new NovcanPart($this->headers, $this->items[33], $customHeadersMap);
+
+        self::assertEquals('MarcinRedys', $part33->getIndex());
+        self::assertEquals('15_MSG_Haczyk.psm', $part33->getName());
+        self::assertEquals('Marcin Wilczewski', $part33->getFilename());
+        self::assertEquals(0, $part33->getQuantity());
+        self::assertEquals('24.04.2017 09:00:33', $part33->getMaterial());
+        self::assertEquals(0.0, $part33->getThickness());
+        self::assertEquals('Haczyk', $part33->getComment());
+        self::assertEquals('MSG_10-05', $part33->getCreatedAt());
+        self::assertEquals('', $part33->getCreatedBy());
+        self::assertEquals('', $part33->getUpdatedAt());
+        self::assertEquals('', $part33->getUpdatedBy());
+    }
+
+    public function testPartWithCustomHeadersAndMapNotExistingProperty()
+    {
+        $customHeadersMap = [
+            'notExistingProperty' => 'Autor',
+        ];
+        self::expectException(ReflectionException::class);
+        $part = new NovcanPart($this->headers, $this->items[0], $customHeadersMap);
+    }
+
+    public function testPartWithCustomHeadersMapAndNotExistingRtfHeader()
+    {
+        $customHeadersMap = [
+            'index' => 'not existing header',
+        ];
+        self::expectException(MappedHeaderNotFoundException::class);
+        $part = new NovcanPart($this->headers, $this->items[0], $customHeadersMap);
     }
 }
